@@ -1,0 +1,4 @@
+<!--pages/login/login.wxml-->
+<view>欢迎</view>
+<button bindtap='pLogin'>个人注册</button>
+<button>企业注册</button>

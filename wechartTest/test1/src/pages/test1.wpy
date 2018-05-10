@@ -1,0 +1,164 @@
+<style lang="less">
+  .userinfo {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .userinfo-avatar {
+    width: 80rpx;
+    height: 80rpx;
+    border-radius: 50%;
+  }
+
+  .userinfo-nickname {
+    color: #aaa;
+  }
+</style>
+<template>
+  <view class="container">
+    <view>test1</view>
+    <image src="{{filePath}}"></image>
+    <button @tap="getImage">选择图片</button>
+  </view>
+</template>
+
+<script>
+  import wepy from 'wepy'
+  import { connect } from 'wepy-redux'
+  import Panel from '@/components/panel' // alias example
+  import Counter from 'counter' // alias example
+  import List from '../components/list' // aliasFields example
+  // import moduleA from 'module-a' // aliasFields ignore module example
+  import Group from '../components/group'
+  import Toast from 'wepy-com-toast'
+  // import testMixin from '../mixins/test'
+
+  @connect({
+    num (state) {
+      return state.counter.num
+    },
+    asyncNum (state) {
+      return state.counter.asyncNum
+    },
+    sumNum (state) {
+      return state.counter.num + state.counter.asyncNum
+    }
+  })
+
+  export default class Index extends wepy.page {
+    config = {
+      navigationBarTitleText: 'app'
+    }
+    components = {
+      panel: Panel,
+      counter1: Counter,
+      counter2: Counter,
+      list: List,
+      group: Group,
+      toast: Toast
+    }
+
+    // mixins = [testMixin]
+
+    data = {
+      mynum: 20,
+      userInfo: {
+        nickName: '加载中...'
+      },
+      normalTitle: '原始标题',
+      setTimeoutTitle: '标题三秒后会被修改',
+      count: 0,
+      netrst: '',
+      filePath: ''
+    }
+
+    computed = {
+      now () {
+        return +new Date()
+      }
+    }
+    methods = {
+      plus () {
+        this.mynum++
+      },
+      getImage () {
+        console.log('获得图片')
+        var that = this
+        console.log(that.choseImage)
+        wepy.showActionSheet({
+          itemList: ['从相册中选取', '拍照'],
+          itemColor: '#CED63A',
+          success: function (res) {
+            // console.log(choseImage)
+            // return
+            if (!res.cancel) {
+              if (res.tapIndex === 0) {
+                that.choseImage('album')
+              } else if (res.tapIndex === 1) {
+                that.choseImage('camera')
+              }
+            }
+          }
+        })
+      },
+      tap () {
+        console.log('do noting from ' + this.$name)
+      },
+      communicate () {
+        console.log(this.$name + ' tap')
+
+        this.$invoke('counter2', 'minus', 45, 6)
+        this.$invoke('counter1', 'plus', 45, 6)
+
+        this.$broadcast('index-broadcast', 1, 3, 4)
+      }
+    }
+
+    events = {
+      'index-emit': (...args) => {
+        let $event = args[args.length - 1]
+        console.log(`${this.$name} receive ${$event.name} from ${$event.source.$name}`)
+      }
+    }
+    onLoad() {
+      let self = this
+      this.$parent.getUserInfo(function (userInfo) {
+        if (userInfo) {
+          self.userInfo = userInfo
+        }
+        self.normalTitle = '标题已被修改'
+
+        self.setTimeoutTitle = '标题三秒后会被修改'
+        setTimeout(() => {
+          self.setTimeoutTitle = '到三秒了'
+          self.$apply()
+        }, 3000)
+
+        self.$apply()
+      })
+    }
+    choseImage (type) {
+      var that = this
+      console.log(that)
+      wepy.chooseImage({
+        count: 1,
+        sizeType: ['original', 'compressed'],
+        sourceType: [type],
+        success: function (res) {
+          console.log(res)
+          that.filePath = res.tempFilePaths[0]
+          console.log(that)
+          new AV.File('file-name', {
+            blob: {
+              uri: that.filePath
+            }
+          }).save().then(
+            file => console.log(file.url())
+          ).catch(console.error)
+          that.$apply()
+        }
+      })
+    }
+  }
+</script>

@@ -1,0 +1,9 @@
+/* pages/login/login.wxss */
+view{
+  text-align: center
+}
+button{
+  width: 250rpx;
+  float: left;
+  margin-left: 100rpx;
+}

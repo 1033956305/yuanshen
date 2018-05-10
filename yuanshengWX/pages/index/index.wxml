@@ -1,0 +1,21 @@
+<swiper indicator-dots="{{indicatorDots}}"
+  autoplay="{{autoplay}}" interval="{{interval}}" duration="{{duration}}" indicator-dots="true">
+  <block wx:for="{{imgUrls}}">
+    <swiper-item>
+      <image src="{{item}}" class="slide-image" width="355" height="150"/>
+    </swiper-item>
+  </block>
+</swiper>
+<view class='items'>
+  <view class='pro-item'>
+    <image src='http://www.xzylogic.xyz/wx_Json_Img/yun4.jpg'></image>
+    <view class='pro-body'>
+      <view class='title'>标题</view>
+      <text>文本内容</text>
+    </view>
+    <view class='pro-footer'>
+      <image src='../../images/sousuo.jpg'></image>
+      <image src='../../images/sousuo.jpg'></image>
+    </view>
+  </view>
+</view>

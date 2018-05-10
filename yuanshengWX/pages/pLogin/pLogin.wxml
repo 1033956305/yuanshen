@@ -1,0 +1,8 @@
+<!--pages/pLogin/pLogin.wxml-->
+<text>注册</text>
+<view class='send-body'>
+  <input placeholder='邀请码' bindinput='InvitationCode'></input>
+  <input placeholder='手机号'></input>
+  <input placeholder='密码' password='true'></input>
+</view>
+<button>注册</button>
